@@ -4,13 +4,11 @@
 # @File : 酷我test4 
 # @Project : pythonProject
 
-import os.path
 import requests
 import json
-import re
 
 
-def kuwo_mp3_Spider():
+def kuwo_spider():
     headers = {
         'Accept': 'application/json, text/plain, */*',
         'Accept-Encoding': 'gzip, deflate',
@@ -29,7 +27,6 @@ def kuwo_mp3_Spider():
     music_info_data = dict(json.loads(res.text))
     music_info_list = music_info_data['data']['list']
 
-
     for music_info in music_info_list:
         name = music_info['name']       # string
         rid = music_info['rid']         # int
@@ -37,7 +34,7 @@ def kuwo_mp3_Spider():
 
         # 录歌词
 
-        music_lyric(rid,name,artist)
+        music_lyric(rid, name, artist)
 
         # 下载mp3
 
@@ -48,13 +45,12 @@ def kuwo_mp3_Spider():
             print('爬取音频成功')
 
 
-
-def music_lyric(rid,name,artist):
+def music_lyric(rid, name, artist):
     headers = {
         'User - Agent': 'Mozilla / 5.0(Windows NT10.0;Win64;x64)'
     }
 
-    url_music_lyric ='http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId={}'.format(rid)
+    url_music_lyric = 'http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId={}'.format(rid)
     res = requests.get(url=url_music_lyric, headers=headers)
     music_info_data = dict(json.loads(res.text))
     music_info_lrclist = music_info_data['data']['lrclist']
@@ -63,7 +59,7 @@ def music_lyric(rid,name,artist):
 
     if music_info_lrclist:
 
-        for lrclist in  music_info_lrclist:
+        for lrclist in music_info_lrclist:
             lyric = lrclist['lineLyric']
 
             with open(f'{name}-{artist}.text', 'a') as f:
@@ -79,6 +75,4 @@ def music_lyric(rid,name,artist):
 
 if __name__ == '__main__':
     print('爬取页面为:', 'http://www.kuwo.cn/search/list?key=%E9%99%95%E5%8C%97%E6%B0%91%E6%AD%8C')
-    kuwo_mp3_Spider()
-
-
+    kuwo_spider()
